@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+out/
+
+# OS files
+.DS_Store
+
+# Logs
+*.log*
+
+# Environment files
+.env
+.env.*
+
+# Lock files
+pnpm-lock.yaml
+
+# IDE specific
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+
+# Build resources
+build/
+
+# Debug files
+*.pdb
+*.map
+
+# Electron builder output
+release/
+
+# Cursor rules
+.cursorrules
