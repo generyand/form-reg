@@ -31,7 +31,7 @@ export const api = {
     return response.json()
   },
   searchUser: async (search: string) => {
-    const response = await fetch(`${BASE_URL}/users?search=${search}`)
+    const response = await fetch(`${BASE_URL}/users/search?search=${search}`)
     return response.json()
   }
 

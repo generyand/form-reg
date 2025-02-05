@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@renderer/lib/api'
 import { CreateUserInput, User } from '../../shared/types'
+import { Pencil, Trash2, Search } from 'lucide-react'
 
 const App = () => {
   const queryClient = useQueryClient()
@@ -10,6 +11,7 @@ const App = () => {
     lastName: ''
   })
   const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [searchInput, setSearchInput] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
 
   // Queries
@@ -21,7 +23,9 @@ const App = () => {
   const { data: searchResults, isLoading: isSearching } = useQuery({
     queryKey: ['users', 'search', searchTerm],
     queryFn: () => searchTerm ? api.searchUser(searchTerm) : api.getUsers(),
-    enabled: true
+    enabled: true,
+    staleTime: 0,
+    refetchOnWindowFocus: true
   })
 
   // Mutations
@@ -37,6 +41,9 @@ const App = () => {
     mutationFn: (id: string) => api.deleteUser(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
+      queryClient.invalidateQueries({ 
+        queryKey: ['users', 'search', searchTerm]
+      })
     }
   })
 
@@ -86,7 +93,17 @@ const App = () => {
   }
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value)
+    setSearchInput(e.target.value)
+  }
+
+  const executeSearch = () => {
+    setSearchTerm(searchInput)
+  }
+
+  const handleSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      executeSearch()
+    }
   }
 
   return (
@@ -94,7 +111,7 @@ const App = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Student Registration</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">User Registration</h1>
           <div className="flex items-center gap-3">
             <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
             <span className="text-slate-300 text-sm">System Online</span>
@@ -103,15 +120,33 @@ const App = () => {
 
         {/* Add search input before the grid */}
         <div className="mb-8">
-          <input
-            type="text"
-            placeholder="Search students..."
-            value={searchTerm}
-            onChange={handleSearch}
-            className="w-full px-4 py-2 bg-slate-800/50 border border-slate-700 rounded-lg 
-                     text-white placeholder-slate-400 focus:outline-none focus:ring-2 
-                     focus:ring-blue-500 focus:border-transparent transition"
-          />
+          <div className="relative flex gap-2">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                placeholder="Search students..."
+                value={searchInput}
+                onChange={handleSearch}
+                onKeyDown={handleSearchKeyPress}
+                className="w-full pl-10 pr-4 py-2 bg-slate-800/50 border border-slate-700 rounded-lg 
+                         text-white placeholder-slate-400 focus:outline-none focus:ring-2 
+                         focus:ring-blue-500 focus:border-transparent transition"
+              />
+              <Search 
+                size={18} 
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"
+              />
+            </div>
+            <button
+              onClick={executeSearch}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg 
+                       transition duration-200 ease-in-out transform hover:scale-105 
+                       focus:outline-none focus:ring-2 focus:ring-blue-500 
+                       focus:ring-offset-2 focus:ring-offset-slate-900"
+            >
+              Search
+            </button>
+          </div>
         </div>
 
         {/* Main Grid */}
@@ -183,7 +218,7 @@ const App = () => {
 
           {/* Students Table */}
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-xl">
-            <h2 className="text-xl font-semibold text-white mb-6">Registered Students</h2>
+            <h2 className="text-xl font-semibold text-white mb-6">Registered Users</h2>
             {isLoading || isSearching ? (
               <div className="flex justify-center items-center h-64">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
@@ -202,25 +237,28 @@ const App = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {searchResults?.map((user) => (
+                    {searchResults?.map((user: User) => (
                       <tr key={user.id} className="border-b border-slate-700/50 hover:bg-white/5">
                         <td className="py-3 px-4 text-slate-300">{user.id.slice(0, 8)}</td>
+
                         <td className="py-3 px-4 text-slate-300">{user.firstName}</td>
                         <td className="py-3 px-4 text-slate-300">{user.lastName}</td>
                         <td className="py-3 px-4 flex gap-3">
                           <button 
                             onClick={() => handleEdit(user)}
-                            className="text-blue-400 hover:text-blue-300"
+                            className="text-blue-400 hover:text-blue-300 p-1 rounded-full 
+                                     hover:bg-blue-400/10 transition-colors"
                           >
-                            Edit
+                            <Pencil size={16} />
                           </button>
                           <button 
                             onClick={() => handleDelete(user.id)}
                             disabled={deleteUserMutation.isPending}
-                            className="text-red-400 hover:text-red-300 
+                            className="text-red-400 hover:text-red-300 p-1 rounded-full 
+                                     hover:bg-red-400/10 transition-colors
                                      disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            Delete
+                            <Trash2 size={16} />
                           </button>
                         </td>
                       </tr>
