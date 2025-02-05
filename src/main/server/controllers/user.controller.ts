@@ -61,9 +61,23 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
     }
 }
 
+export const searchUser = async (req: Request, res: Response): Promise<void> => {
+    console.log('Searching for user:', req.query)
 
+    try {
+        const { search } = req.query
+        const users = await prisma.user.findMany({
+            where: {
+                OR: [
+                    { firstName: { contains: search as string, mode: 'insensitive' } },
+                    { lastName: { contains: search as string, mode: 'insensitive' } }
 
-
-
-
-
+                ]
+            }
+        })
+        res.json(users)
+    } catch (error) {
+        console.error('Failed to search users:', error)
+        res.status(500).json({ error: 'Failed to search users' })
+    }
+}

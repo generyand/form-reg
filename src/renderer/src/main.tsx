@@ -21,7 +21,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <App />
-      {/* {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />} */}
+      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
     </QueryClientProvider>
   </React.StrictMode>
 )
