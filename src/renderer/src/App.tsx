@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@renderer/lib/api'
 import { CreateUserInput, User } from '../../shared/types'
 import { Pencil, Trash2, Search } from 'lucide-react'
+import { ConfirmModal } from './components/ConfirmModal'
 
 const App = () => {
   const queryClient = useQueryClient()
@@ -13,15 +14,15 @@ const App = () => {
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [searchInput, setSearchInput] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [userToDelete, setUserToDelete] = useState<string | null>(null)
 
   // Queries
-  const {
-    data: _users,
-    isLoading,
-    error
-  } = useQuery({
+  const { data: users, isLoading, error } = useQuery({
     queryKey: ['users'],
-    queryFn: () => api.getUsers()
+    queryFn: () => api.getUsers(),
+    staleTime: 0,
+    refetchOnWindowFocus: true
   })
 
   const { data: searchResults, isLoading: isSearching } = useQuery({
@@ -45,9 +46,7 @@ const App = () => {
     mutationFn: (id: string) => api.deleteUser(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
-      queryClient.invalidateQueries({
-        queryKey: ['users', 'search', searchTerm]
-      })
+      queryClient.invalidateQueries({ queryKey: ['users', 'search'] })
     }
   })
 
@@ -70,8 +69,15 @@ const App = () => {
   }
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      deleteUserMutation.mutate(id)
+    setUserToDelete(id)
+    setIsDeleteModalOpen(true)
+  }
+
+  const handleConfirmDelete = () => {
+    if (userToDelete) {
+      deleteUserMutation.mutate(userToDelete)
+      setIsDeleteModalOpen(false)
+      setUserToDelete(null)
     }
   }
 
@@ -276,6 +282,17 @@ const App = () => {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false)
+          setUserToDelete(null)
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+      />
     </div>
   )
 }

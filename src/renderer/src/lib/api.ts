@@ -24,11 +24,16 @@ export const api = {
 
     return response.json()
   },
-  deleteUser: async (id: string) => {
+  deleteUser: async (id: string): Promise<void> => {
     const response = await fetch(`${BASE_URL}/users/${id}`, {
       method: 'DELETE'
     })
-    return response.json()
+    if (!response.ok) {
+      throw new Error('Failed to delete user')
+    }
+    if (response.status !== 204) {
+      throw new Error('Unexpected response from server')
+    }
   },
   searchUser: async (search: string) => {
     const response = await fetch(`${BASE_URL}/users/search?search=${search}`)
