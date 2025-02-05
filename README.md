@@ -1,6 +1,6 @@
-# Student Registration Desktop Application
+# User Registration Desktop Application
 
-A cross-platform desktop application built with Electron, React, and TypeScript for managing student registrations. The application features a modern UI with real-time updates and a PostgreSQL database backend.
+A cross-platform desktop application built with Electron, React, and TypeScript for managing user registrations. The application features a modern UI with real-time updates and a PostgreSQL database backend.
 
 ## Features
 
@@ -10,7 +10,7 @@ A cross-platform desktop application built with Electron, React, and TypeScript 
 - 🎨 Modern UI with Tailwind CSS
 - 🔄 Real-time updates using React Query
 - 🔒 Secure database connections with connection pooling
-- 🛠️ Full CRUD operations for student management
+- 🛠️ Full CRUD operations for user management
 
 ## Prerequisites
 
