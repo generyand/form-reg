@@ -14,5 +14,20 @@ export const api = {
       body: JSON.stringify(data)
     })
     return response.json()
+  },
+  updateUser: async (id: string, data: UpdateUserInput) => {
+    const response = await fetch(`${BASE_URL}/users/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+
+    return response.json()
+  },
+  deleteUser: async (id: string) => {
+    const response = await fetch(`${BASE_URL}/users/${id}`, {
+      method: 'DELETE'
+    })
+    return response.json()
   }
 } 
