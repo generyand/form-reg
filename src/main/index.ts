@@ -19,6 +19,7 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+    mainWindow.setTitle('Registration')
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
