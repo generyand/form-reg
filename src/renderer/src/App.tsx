@@ -1,4 +1,15 @@
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../src/lib/api'
+
 const App = () => {
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => api.getUsers()
+  })
+
+  console.log(data);
+
   return (
     <div className="min-h-screen bg-slate-800 p-6">
       {/* Main Container */}

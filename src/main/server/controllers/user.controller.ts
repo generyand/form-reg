@@ -13,8 +13,8 @@ export const getUsers = async (_req: Request, res: Response): Promise<void> => {
 }
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
-    console.log('Received data:', { firstName: req.body.firstName, lastName: req.body.lastName })
-    console.log('Creating user:', req.body)
+    // console.log('Received data:', { firstName: req.body.firstName, lastName: req.body.lastName })
+    // console.log('Creating user:', req.body)
     try {
         const { firstName, lastName } = req.body as CreateUserInput
 
