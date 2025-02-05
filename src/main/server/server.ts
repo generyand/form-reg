@@ -27,12 +27,13 @@ app.get('/api/users', async (_, res) => {
 // Example create user endpoint
 app.post('/api/users', async (req, res) => {
   try {
-    const { email, name } = req.body
+    const { firstName, lastName } = req.body
     const user = await prisma.user.create({
       data: {
-        email,
-        name
+        firstName,
+        lastName
       }
+
     })
     res.status(201).json(user)
   } catch (error) {
