@@ -6,7 +6,7 @@ const api = {
   // Example: IPC methods
   sendMessage: (message: string) => {
     // IPC implementation
-    console.log(message);
+    console.log(message)
   }
 }
 

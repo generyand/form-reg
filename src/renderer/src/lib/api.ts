@@ -34,6 +34,4 @@ export const api = {
     const response = await fetch(`${BASE_URL}/users/search?search=${search}`)
     return response.json()
   }
-
-
-} 
+}

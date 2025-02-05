@@ -15,14 +15,18 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('')
 
   // Queries
-  const { data: _users, isLoading, error } = useQuery({
+  const {
+    data: _users,
+    isLoading,
+    error
+  } = useQuery({
     queryKey: ['users'],
     queryFn: () => api.getUsers()
   })
 
   const { data: searchResults, isLoading: isSearching } = useQuery({
     queryKey: ['users', 'search', searchTerm],
-    queryFn: () => searchTerm ? api.searchUser(searchTerm) : api.getUsers(),
+    queryFn: () => (searchTerm ? api.searchUser(searchTerm) : api.getUsers()),
     enabled: true,
     staleTime: 0,
     refetchOnWindowFocus: true
@@ -41,15 +45,14 @@ const App = () => {
     mutationFn: (id: string) => api.deleteUser(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
-      queryClient.invalidateQueries({ 
+      queryClient.invalidateQueries({
         queryKey: ['users', 'search', searchTerm]
       })
     }
   })
 
   const updateUserMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: Partial<User> }) => 
-      api.updateUser(id, data),
+    mutationFn: ({ id, data }: { id: string; data: Partial<User> }) => api.updateUser(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })
     }
@@ -63,7 +66,7 @@ const App = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+    setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
   const handleDelete = (id: string) => {
@@ -80,15 +83,18 @@ const App = () => {
   const handleUpdate = (e: React.FormEvent) => {
     e.preventDefault()
     if (editingUser) {
-      updateUserMutation.mutate({
-        id: editingUser.id,
-        data: formData
-      }, {
-        onSuccess: () => {
-          setEditingUser(null)
-          setFormData({ firstName: '', lastName: '' })
+      updateUserMutation.mutate(
+        {
+          id: editingUser.id,
+          data: formData
+        },
+        {
+          onSuccess: () => {
+            setEditingUser(null)
+            setFormData({ firstName: '', lastName: '' })
+          }
         }
-      })
+      )
     }
   }
 
@@ -132,8 +138,8 @@ const App = () => {
                          text-white placeholder-slate-400 focus:outline-none focus:ring-2 
                          focus:ring-blue-500 focus:border-transparent transition"
               />
-              <Search 
-                size={18} 
+              <Search
+                size={18}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"
               />
             </div>
@@ -156,9 +162,7 @@ const App = () => {
             <h2 className="text-xl font-semibold text-white mb-6">New Registration</h2>
             <form onSubmit={editingUser ? handleUpdate : handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">
-                  First Name
-                </label>
+                <label className="block text-sm font-medium text-slate-300 mb-1">First Name</label>
                 <input
                   type="text"
                   name="firstName"
@@ -171,9 +175,7 @@ const App = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1">
-                  Last Name
-                </label>
+                <label className="block text-sm font-medium text-slate-300 mb-1">Last Name</label>
                 <input
                   type="text"
                   name="lastName"
@@ -195,9 +197,13 @@ const App = () => {
                            focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900
                            disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {editingUser 
-                    ? (updateUserMutation.isPending ? 'Updating...' : 'Update') 
-                    : (createUserMutation.isPending ? 'Registering...' : 'Register')}
+                  {editingUser
+                    ? updateUserMutation.isPending
+                      ? 'Updating...'
+                      : 'Update'
+                    : createUserMutation.isPending
+                      ? 'Registering...'
+                      : 'Register'}
                 </button>
                 <button
                   type="button"
@@ -244,14 +250,14 @@ const App = () => {
                         <td className="py-3 px-4 text-slate-300">{user.firstName}</td>
                         <td className="py-3 px-4 text-slate-300">{user.lastName}</td>
                         <td className="py-3 px-4 flex gap-3">
-                          <button 
+                          <button
                             onClick={() => handleEdit(user)}
                             className="text-blue-400 hover:text-blue-300 p-1 rounded-full 
                                      hover:bg-blue-400/10 transition-colors"
                           >
                             <Pencil size={16} />
                           </button>
-                          <button 
+                          <button
                             onClick={() => handleDelete(user.id)}
                             disabled={deleteUserMutation.isPending}
                             className="text-red-400 hover:text-red-300 p-1 rounded-full 

@@ -1,10 +1,10 @@
 // Database types (from Prisma)
 export interface User {
-    id: string
-    firstName: string
-    lastName: string
-    createdAt: string
-    updatedAt: string
+  id: string
+  firstName: string
+  lastName: string
+  createdAt: string
+  updatedAt: string
 }
 
 // Request/Response types
