@@ -22,8 +22,8 @@ A cross-platform desktop application built with Electron, React, and TypeScript 
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd stud-reg
+git clone https://github.com/generyand/form-reg.git
+cd form-reg
 ```
 
 2. Install dependencies:
