@@ -15,7 +15,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('')
 
   // Queries
-  const { data: users, isLoading, error } = useQuery({
+  const { data: _users, isLoading, error } = useQuery({
     queryKey: ['users'],
     queryFn: () => api.getUsers()
   })

@@ -16,7 +16,7 @@ testConnection()
         process.exit(1)
     })
 
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
     res.send('Hello World! Testing')
 })
 
