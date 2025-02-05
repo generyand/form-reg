@@ -2,6 +2,12 @@ import express from 'express'
 
 const app = express()
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000')
+// Add some basic middleware
+app.use(express.json())
+
+// Add a test endpoint
+app.get('/api/test', (_, res) => {
+  res.json({ message: 'Express server is running' })
 })
+
+export { app }
